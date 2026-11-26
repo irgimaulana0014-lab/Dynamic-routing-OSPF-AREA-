@@ -1,1 +1,16 @@
+sys id set name=R-2
+/ip address add address=10.0.1.2/30 interface=ether1 comment="Link to ROUTER1"
+ip add address=10.0.2.1/30 interface=ether2 comment="Link to ROUTER3"
 
+# 2. OSPF Instance & Multi-Area (Area 0 dan Area 1)
+/routing/ospf/instance
+add name=ospf-inst router-id=2.2.2.2
+
+/routing/ospf/area
+add name=backbone area-id=0.0.0.0 instance=ospf-inst
+add name=area-cabang area-id=0.0.0.1 instance=ospf-inst
+
+# 3. Interface Template (Menghubungkan interface ke area masing-masing)
+/routing/ospf/interface-template
+add areas=backbone networks=10.0.1.0/30
+add areas=area-cabang networks=10.0.2.0/30
