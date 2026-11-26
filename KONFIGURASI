@@ -1,1 +1,16 @@
+# 1. IP Address
+/ip address add address=192.168.10.1/24 interface=ether2 comment="LAN PC1"
+ip add address=10.0.1.1/30 interface=ether3 comment="Link to ROUTER2"
 
+# 2. DHCP Client untuk Internet (Cloud2)
+/ip dhcp-client add interface=ether1 disabled=no
+
+# 3. NAT Masquerade
+/ip firewall nat add chain=srcnat out-interface=ether1 action=masquerade
+
+# 4. OSPF Multi-Area (Area 0 / Backbone)
+/routing/ospf/instance add name=ospf-inst router-id=1.1.1.1
+
+/routing/ospf/area add name=backbone area-id=0.0.0.0 instance=ospf-inst
+
+/routing/ospf/interface-template add areas=backbone networks=10.0.1.0/30,192.168.10.0/24
